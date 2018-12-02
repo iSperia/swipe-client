@@ -1,0 +1,9 @@
+package com.game7th.swipe.logics.battleground
+
+const val MELEE_MOVE_DURATION = 0.2f
+const val MELEE_ANIMATE_DURATION = 0.3f
+const val MELEE_TOTAL_DURATION = MELEE_MOVE_DURATION + MELEE_ANIMATE_DURATION
+
+const val CREATE_PERSONAGE_DURATION = 0.25f
+
+const val TAKE_DAMAGE_DURATION = 0.2f

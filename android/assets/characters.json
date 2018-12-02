@@ -1,0 +1,150 @@
+{"characters": [
+  {
+    "id": "p_knight",
+    "graphics": "p_knight",
+    "healthPerLevel": 100,
+    "abilities": [
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 30
+        },
+        "level": 1
+      },
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 50
+        },
+        "level": 2
+      },
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 70
+        },
+        "level": 3
+      },
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 100
+        },
+        "level": 4
+      },
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 150
+        },
+        "level": 5
+      }
+    ]
+  },
+  {
+    "id": "p_archer",
+    "graphics": "p_archer",
+    "healthPerLevel": 90,
+    "abilities": [
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 30
+        },
+        "level": 1
+      },
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 50
+        },
+        "level": 2
+      },
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 70
+        },
+        "level": 3
+      },
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 100
+        },
+        "level": 4
+      },
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 150
+        },
+        "level": 5
+      }
+    ]
+  },
+  {
+    "id": "p_priest",
+    "graphics": "p_priest",
+    "healthPerLevel": 80,
+    "abilities": [
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 30
+        },
+        "level": 1
+      },
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 50
+        },
+        "level": 2
+      },
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 70
+        },
+        "level": 3
+      },
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 100
+        },
+        "level": 4
+      },
+      {
+        "titleId": "sword_attack",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 150
+        },
+        "level": 5
+      }
+    ]
+  },
+  {
+    "id": "npc_goblin",
+    "graphics": "npc_goblin",
+    "healthPerLevel": 400,
+    "abilities": [
+    ]
+  }
+]}
