@@ -5,6 +5,7 @@ import com.game7th.swipe.gameplay.core.SwipeGameScreen
 import com.game7th.swipe.gameplay.battle.battleground.BattleActor
 import com.game7th.swipe.gameplay.battle.grid.BlockFieldActor
 import com.game7th.swipe.gameplay.core.Resources
+import com.game7th.swipe.gameplay.sprites.SpriteSheet
 import com.game7th.swipe.logics.battleground.*
 import com.game7th.swipe.logics.field.*
 import kotlin.math.abs
@@ -19,6 +20,8 @@ class BattleScreen(val resources: Resources) : SwipeGameScreen() {
 
     var fieldEngine: FieldEngine
     var battleEngine: BattleEngine
+
+    var shouldFireNpcPersonages = false
 
     init {
         fieldEngine = FieldEngine()
@@ -38,12 +41,6 @@ class BattleScreen(val resources: Resources) : SwipeGameScreen() {
     override fun act(delta: Float) {
         super.act(delta)
 
-        battleEngine.events().forEach {
-            aBattle.processAction(it)
-
-        }
-        battleEngine.consumeEvents()
-
         fieldEngine.events().forEach {
             when (it) {
                 is FACreateBlock -> aField.addBlock(it.block, 0.25f)
@@ -55,29 +52,42 @@ class BattleScreen(val resources: Resources) : SwipeGameScreen() {
             }
         }
         fieldEngine.consumeEvents()
+
+        if (shouldFireNpcPersonages) {
+            battleEngine.processNpcPersonages()
+            shouldFireNpcPersonages = false
+        }
+
+        battleEngine.events().forEach {
+            System.err.print("${it} ")
+            aBattle.processAction(it)
+        }
+        System.err.println()
+        battleEngine.consumeEvents()
     }
 
     private fun processBlockResource(blockResource: FABlockResource) {
         if (blockResource.block.type == BlockType.Skill) {
+            Gdx.app.log("BattleScreen", "block resource: ${blockResource.block}")
             battleEngine.triggerSkill(blockResource.block.level + 1)
         }
     }
 
     override fun fling(velocityX: Float, velocityY: Float, button: Int): Boolean {
-        Gdx.app.log("Swipe", "fling $velocityX $velocityY $button")
         var createNew = true
-        if (velocityX < -1000f && abs(velocityY) < 300f) {
-            fieldEngine.shiftLeft()
-        } else if (abs(velocityX) < 300f && velocityY < -1000f) {
-            fieldEngine.shiftUp()
-        } else if (abs(velocityX) < 300f && velocityY > 1000f) {
-            fieldEngine.shiftDown()
-        } else if (velocityX > 1000f && abs(velocityY) < 300f) {
-            fieldEngine.shiftRight()
+        if (velocityX < -1000f && abs(velocityY) < 500f) {
+            createNew = fieldEngine.shiftLeft()
+        } else if (abs(velocityX) < 500f && velocityY < -1000f) {
+            createNew = fieldEngine.shiftUp()
+        } else if (abs(velocityX) < 500f && velocityY > 1000f) {
+            createNew = fieldEngine.shiftDown()
+        } else if (velocityX > 1000f && abs(velocityY) < 500f) {
+            createNew = fieldEngine.shiftRight()
         } else {
             createNew = false
         }
         if (createNew) {
+            shouldFireNpcPersonages = true
             fieldEngine.generateBlock()
         }
         return false

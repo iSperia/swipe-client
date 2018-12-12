@@ -7,7 +7,13 @@ data class BlockInfo(
         var level: Int,
         val id: Int = COUNT++
 ) {
+    constructor(shiftedBlock: FieldEngine.ShiftedBlock) : this(
+            shiftedBlock.type, shiftedBlock.x, shiftedBlock.y, shiftedBlock.level, shiftedBlock.id
+    )
+
     fun match(block: BlockInfo) = level == block.level && type == block.type
+
+    override fun toString() = "$type level=$level x=$x y=$y id=$id"
 
     companion object {
         var COUNT = 0

@@ -12,7 +12,8 @@ data class CharacterAbility(
         @SerializedName("titleId") val titleId: String,
         @SerializedName("logic") val logic: AbilityLogic,
         @SerializedName("arguments") val arguments: Map<String, Int>,
-        @SerializedName("level") val level: Int
+        @SerializedName("level") val level: Int,
+        @SerializedName("rate") val rate: Float?
 )
 
 data class CharacterTemplate(

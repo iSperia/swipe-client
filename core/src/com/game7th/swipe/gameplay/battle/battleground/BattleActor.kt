@@ -1,28 +1,32 @@
 package com.game7th.swipe.gameplay.battle.battleground
 
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.Group
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.game7th.swipe.gameplay.sprites.SpriteSheet
 import com.game7th.swipe.logics.battleground.*
 import ktx.actors.alpha
+import java.util.*
 
 class BattleActor : Group() {
 
     init {
-        addActor(Image(Texture("battle_bg_0.fw.png")))
+        val random = Random()
+        addActor(Image(Texture("battle_bg_${random.nextInt(3)}.fw.png")))
     }
 
-    private fun placeStandardCharacter(x: Int, y: Int, side: FieldSide, actor: Actor) {
+    private fun placeStandardCharacter(x: Int, y: Int, side: FieldSide, actor: PersonageActor) {
         when (side) {
             FieldSide.Left -> {
-                actor.x = CHARACTER_CELL_WIDTH * x + 12f * y
-                actor.y = CHARACTER_CELL_WIDTH * y
+                actor.place(
+                        CHARACTER_CELL_WIDTH * x + 12f * y,
+                        CHARACTER_CELL_WIDTH * y)
             }
             FieldSide.Right -> {
-                actor.x = 480f - CHARACTER_CELL_WIDTH * (x + 1) - 12f * y
-                actor.y = CHARACTER_CELL_WIDTH / 2 + CHARACTER_CELL_WIDTH * y
+                actor.place(
+                        480f - CHARACTER_CELL_WIDTH * (x + 1) - 12f * y,
+                        CHARACTER_CELL_WIDTH / 2 + CHARACTER_CELL_WIDTH * y)
             }
         }
     }
@@ -48,17 +52,28 @@ class BattleActor : Group() {
             val actor = findActor<PersonageActor>(action.id.toString())
             val targetActor = findActor<PersonageActor>(action.targetId.toString())
 
-            val delta = if (targetActor.x > actor.x) -1 else 1
-            val jumpX = targetActor.x + delta * CHARACTER_CELL_WIDTH / 2f
+            val delta = if (targetActor.sx > actor.sx) -1 else 1
+            val jumpX = targetActor.sx + delta * CHARACTER_CELL_WIDTH / 2f
 
-            val oldX = actor.x
-            val oldY = actor.y
+            val oldX = actor.sx
+            val oldY = actor.sy
 
             actor.addAction(Actions.sequence(
-                    Actions.moveTo(jumpX, targetActor.y, MELEE_MOVE_DURATION),
-                    Actions.scaleTo(1.2f, 1.2f, MELEE_ANIMATE_DURATION / 2f),
-                    Actions.scaleTo(1f, 1f, MELEE_ANIMATE_DURATION / 2f),
-                    Actions.moveTo(oldX, oldY, MELEE_MOVE_DURATION)))
+                    Actions.run {
+                        actor.addActor(SpriteSheet().apply {
+                            setAtlas("unnamed.atlas")
+                            name = "effect"
+                        })
+                    },
+                    Actions.delay(0.5f, Actions.sequence(
+                            Actions.run {
+                                actor.removeActor(actor.findActor("effect"))
+                            },
+                            Actions.moveTo(jumpX, targetActor.y, MELEE_MOVE_DURATION),
+                            Actions.scaleTo(1.2f, 1.2f, MELEE_ANIMATE_DURATION / 2f),
+                            Actions.scaleTo(1f, 1f, MELEE_ANIMATE_DURATION / 2f),
+                            Actions.moveTo(oldX, oldY, MELEE_MOVE_DURATION)))
+                    ))
         }))
     }
 
@@ -77,6 +92,16 @@ class BattleActor : Group() {
         )))
     }
 
+    private fun animateDestroyPersonage(action: BADestroyPersonage) {
+        val actor = findActor<PersonageActor>(action.id.toString())
+        actor.addAction(Actions.delay(action.delay, Actions.sequence(
+                Actions.alpha(0f, DESTROY_PERSONAGE_DURATION),
+                Actions.run {
+                    actor.parent.removeActor(actor)
+                }
+        )))
+    }
+
     private fun startParallel(action: BAParallel) {
         action.actions.forEach { processAction(it) }
     }
@@ -86,7 +111,9 @@ class BattleActor : Group() {
             is BACreatePersonage -> createPersonage(it)
             is BAMeleeAttack -> animateMelee(it)
             is BATakeDamage -> animateTakeDamage(it)
+            is BADestroyPersonage -> animateDestroyPersonage(it)
             is BAParallel -> startParallel(it)
         }
     }
+
 }

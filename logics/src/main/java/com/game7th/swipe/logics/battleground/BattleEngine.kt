@@ -19,7 +19,7 @@ class BattleEngine(configA: PartyConfig, configB: PartyConfig) {
                     x = it.x,
                     y = it.y,
                     control = configA.control,
-                    health = it.level * it.template.healthPerLevel / 2,
+                    health = it.level * it.template.healthPerLevel,
                     healthMax = it.level * it.template.healthPerLevel
             ).apply { eventsToAdd.add(BACreatePersonage(this)) })
         }
@@ -31,7 +31,7 @@ class BattleEngine(configA: PartyConfig, configB: PartyConfig) {
                     x = it.x,
                     y = it.y,
                     control = configB.control,
-                    health = it.level * it.template.healthPerLevel / 2,
+                    health = it.level * it.template.healthPerLevel,
                     healthMax = it.level * it.template.healthPerLevel
             ).apply { eventsToAdd.add(BACreatePersonage(this)) })
         }
@@ -45,15 +45,21 @@ class BattleEngine(configA: PartyConfig, configB: PartyConfig) {
             it.delay = shift
             shift += it.endurance
         }
-        return events
+        return events.sortedBy { it.priority }
     }
 
     fun consumeEvents() = events.clear()
 
     fun triggerSkill(level: Int) {
         val charactersAvailable = characters.filter { it.control == CharacterControlType.Human && it.health > 0 }
+        if (charactersAvailable.isEmpty()) return
         val personage = charactersAvailable[random.nextInt(charactersAvailable.size)]
         val ability = personage.template.abilities.find { it.level == level }
+        System.err.println("trigger skill $level ${personage.id} ${ability?.titleId}")
+        activateAbility(ability, personage)
+    }
+
+    private fun activateAbility(ability: CharacterAbility?, personage: Personage) {
         ability?.let { ability ->
             when (ability.logic) {
                 AbilityLogic.MeleeAttack -> processMeleeAttack(personage, ability)
@@ -62,9 +68,25 @@ class BattleEngine(configA: PartyConfig, configB: PartyConfig) {
         }
     }
 
+    fun processNpcPersonages() {
+        characters.filter { it.control == CharacterControlType.Ai && it.health > 0 }.forEach { npc ->
+            var triggeredAbility: CharacterAbility? = null
+            npc.template.abilities.sortedByDescending { it.level }.forEach { ability ->
+                triggeredAbility ?: let {
+                    val randomNumer = random.nextFloat()
+                    if (randomNumer < ability.rate ?: 0f) {
+                        triggeredAbility = ability
+                    }
+                }
+            }
+
+            activateAbility(triggeredAbility, npc)
+        }
+    }
+
     private fun processMeleeAttack(personage: Personage, ability: CharacterAbility) {
-        val foes = characters.filter { it.side != personage.side }
-        val lines = foes.groupBy { it.x }
+        val foesAlive = characters.filter { it.side != personage.side && it.health > 0 }
+        val lines = foesAlive.groupBy { it.x }
         val target = lines.maxBy { it.key }?.value?.maxBy { it.health }
         target?.let { attackTarget ->
             val baseAttackValue = ability.arguments["base_value"] ?: 0 //0 is fallback value
@@ -74,6 +96,10 @@ class BattleEngine(configA: PartyConfig, configB: PartyConfig) {
 
             events.add(BAMeleeAttack(personage.id, target.id))
             events.add(BATakeDamage(target.id, amount, target.health))
+
+            if (target.health <= 0) {
+                events.add(BADestroyPersonage(target.id))
+            }
         }
     }
 }

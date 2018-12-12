@@ -8,7 +8,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 30
+          "base_value": 10
         },
         "level": 1
       },
@@ -16,7 +16,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 50
+          "base_value": 15
         },
         "level": 2
       },
@@ -24,7 +24,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 70
+          "base_value": 20
         },
         "level": 3
       },
@@ -32,7 +32,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 100
+          "base_value": 30
         },
         "level": 4
       },
@@ -40,7 +40,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 150
+          "base_value": 50
         },
         "level": 5
       }
@@ -55,7 +55,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 30
+          "base_value": 10
         },
         "level": 1
       },
@@ -63,7 +63,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 50
+          "base_value": 15
         },
         "level": 2
       },
@@ -71,7 +71,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 70
+          "base_value": 20
         },
         "level": 3
       },
@@ -79,7 +79,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 100
+          "base_value": 30
         },
         "level": 4
       },
@@ -87,7 +87,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 150
+          "base_value": 50
         },
         "level": 5
       }
@@ -102,7 +102,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 30
+          "base_value": 10
         },
         "level": 1
       },
@@ -110,7 +110,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 50
+          "base_value": 15
         },
         "level": 2
       },
@@ -118,7 +118,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 70
+          "base_value": 20
         },
         "level": 3
       },
@@ -126,7 +126,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 100
+          "base_value": 30
         },
         "level": 4
       },
@@ -134,7 +134,7 @@
         "titleId": "sword_attack",
         "logic": "melee_attack",
         "arguments": {
-          "base_value": 150
+          "base_value": 50
         },
         "level": 5
       }
@@ -143,8 +143,26 @@
   {
     "id": "npc_goblin",
     "graphics": "npc_goblin",
-    "healthPerLevel": 400,
+    "healthPerLevel": 60,
     "abilities": [
+      {
+        "titleId": "goblin_strike",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 10
+        },
+        "level": 1,
+        "rate": 0.15
+      },
+      {
+        "titleId": "goblin_rage",
+        "logic": "melee_attack",
+        "arguments": {
+          "base_value": 15
+        },
+        "level": 2,
+        "rate": 0.07
+      }
     ]
   }
 ]}

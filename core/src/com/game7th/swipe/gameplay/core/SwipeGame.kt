@@ -60,8 +60,19 @@ class SwipeGame : ApplicationAdapter() {
         batch.end()
     }
 
+    override fun resize(width: Int, height: Int) {
+        super.resize(width, height)
+        screenWidth = width.toFloat()
+        screenHeight = height.toFloat()
+    }
+
     override fun dispose() {
         batch.dispose()
+    }
+
+    companion object {
+        var screenWidth: Float = 0f
+        var screenHeight: Float = 0f
     }
 }
 

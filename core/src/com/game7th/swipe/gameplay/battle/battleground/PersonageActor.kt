@@ -12,6 +12,9 @@ class PersonageActor(var skin: String, var health: Int, var maxHealth: Int, var 
 
     val shapeRenderer = ShapeRenderer()
 
+    var sx = 0f
+    var sy = 0f
+
     init {
         val img = Image(Texture("$skin.png"))
         img.scaleX = when (side) {
@@ -23,6 +26,13 @@ class PersonageActor(var skin: String, var health: Int, var maxHealth: Int, var 
             else -> 0f
         }
         addActor(img)
+    }
+
+    fun place(x: Float, y: Float) {
+        this.x = x
+        this.y = y
+        sx = x
+        sy = y
     }
 
     override fun draw(batch: Batch?, parentAlpha: Float) {

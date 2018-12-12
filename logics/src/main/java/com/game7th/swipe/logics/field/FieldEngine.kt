@@ -51,7 +51,7 @@ class FieldEngine {
         fun match(block: ShiftedBlock) = level == block.level && type == block.type
     }
 
-    private fun shift(dx: Int, dy: Int) {
+    private fun shift(dx: Int, dy: Int): Boolean {
         val lockedIndexes = mutableListOf<Int>()
 
         //copy stuff to shifted blocks
@@ -70,6 +70,7 @@ class FieldEngine {
         var ry = if (dy > 0) fy downTo ty else fy..ty
 
         var isAnythingHappened = true
+        var isAnythingHappenedEver = false
 
         while (isAnythingHappened) {
             isAnythingHappened = false
@@ -87,10 +88,12 @@ class FieldEngine {
                                 if (shiftedBlock.match(toCell) && !toCell.isMerged) {
                                     shiftedCells[idx] = null
 
+                                    System.err.println("merge block: $tox $toy")
                                     mergeActions.add(FAMergeBlock(shiftedBlock.id, tox, toy))
 
-                                    cells[toCell.x + toCell.y * fieldSize]?.let { block ->
-                                        mergeActions.add(FABlockResource(block.copy(level = block.level)))
+                                    shiftedCells[toCell.x + toCell.y * fieldSize]?.let { shiftedCell ->
+                                        System.err.println("add merge action $tox $toy")
+                                        mergeActions.add(FABlockResource(BlockInfo(shiftedCell)))
                                     }
 
                                     if (toCell.level < toCell.type.maxLevel) {
@@ -104,6 +107,7 @@ class FieldEngine {
                                     }
 
                                     isAnythingHappened = true
+                                    isAnythingHappenedEver = true
                                 }
                             } else {
                                 shiftedCells[toIdx] = shiftedBlock
@@ -112,6 +116,7 @@ class FieldEngine {
                                 shiftedCells[idx] = null
 
                                 isAnythingHappened = true
+                                isAnythingHappenedEver = true
                             }
                         }
                     }
@@ -138,6 +143,8 @@ class FieldEngine {
 
         events.addAll(moveActions)
         events.addAll(mergeActions)
+
+        return isAnythingHappenedEver
     }
 
     fun events() = events
